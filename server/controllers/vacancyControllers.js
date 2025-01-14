@@ -33,6 +33,17 @@ module.exports = {
                 res.status(500).json({ error: 'Failed to retrieve vacancies' });
             });
     },
+    getAllVacancyByCompanyId: (req, res) => {
+        const companyId = req.params.id;
+
+        VacancyModel.find({ companyId })
+            .then(function (data) {
+                res.json(data);
+            })
+            .catch(function (err) {
+                res.status(500).json({ error: 'Failed to retrieve vacancies' });
+            });
+    },
     getById: (req, res) => {
         const vacancyId = req.params.id;
 

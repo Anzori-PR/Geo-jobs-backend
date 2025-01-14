@@ -79,6 +79,28 @@ module.exports = {
             res.status(500).json({ error: 'Failed to login', details: error.message });
         }
     },
+    GetAllCompany: async (req, res) => {
+        try {
+            const companies = await UserModel.find({ role: 'company' }, 'companyInfo', req.params.id);
+
+            res.json(companies.map(company => ({
+                userId: company._id,
+                companyInfo: company.companyInfo
+            })));
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to retrieve companies' });
+        }
+    },
+    GetCompanyById: async (req, res) => {
+        const companyId = req.params.id;
+
+        try {
+            const company = await UserModel.findById(companyId);
+            res.json(company);
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to retrieve company' });  
+        }
+    },
     UpdateCompany: async (req, res) => {
         const { userId, companyInfo } = req.body;
 

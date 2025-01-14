@@ -6,5 +6,6 @@ const vacancyController = require('../controllers/vacancyControllers');
 router.post('/add', vacancyController.addVacancy);
 router.get('/all', vacancyController.getAll);
 router.get('/details/:id', vacancyController.getById);
+router.get('/vacancies/:id', vacancyController.getAllVacancyByCompanyId);
 
 module.exports = router;
