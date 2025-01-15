@@ -9,5 +9,6 @@ router.post('/login', userController.Login);
 router.get('/all', userController.GetAllCompany);
 router.get('/CompanyDetails/:id', userController.GetCompanyById);
 router.put('/UpdateCompany', userController.UpdateCompany);
+router.get('/search', userController.searchCompany);
 
 module.exports = router;

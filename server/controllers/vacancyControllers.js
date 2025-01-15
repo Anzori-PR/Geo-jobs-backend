@@ -33,6 +33,29 @@ module.exports = {
                 res.status(500).json({ error: 'Failed to retrieve vacancies' });
             });
     },
+    searchVacancy: (req, res) => {
+        const { name, category, location } = req.query;
+
+        const filter = {};
+
+        if (name) {
+            filter.name = { $regex: name, $options: 'i' };
+        }
+        if (category) {
+            filter.category = category;
+        }
+        if (location) {
+            filter.location = location;
+        }
+
+        VacancyModel.find(filter)
+            .then(data => {
+                res.json(data);
+            })
+            .catch(err => {
+                res.status(500).json({ error: 'Failed to search vacancies' });
+            });
+    },
     getAllVacancyByCompanyId: (req, res) => {
         const companyId = req.params.id;
 

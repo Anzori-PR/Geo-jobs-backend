@@ -19,14 +19,11 @@ module.exports = {
                 name,
                 email,
                 password: hashedPassword,
-                role
+                role,
+                companyInfo: role === 'company' ? companyInfo : undefined
             });
 
             await newUser.save();
-
-            if (role === 'company') {
-                newUser.companyInfo = companyInfo;
-            }
 
             const token = jwt.sign({ id: newUser._id, role: newUser.role }, 'your_jwt_secret', { expiresIn: '1h' });
 
@@ -38,7 +35,7 @@ module.exports = {
                     name: newUser.name,
                     email: newUser.email,
                     role: newUser.role,
-                    companyInfo: newUser.role === 'company' ? user.companyInfo : null // Only include company info if the user is a company
+                    companyInfo: newUser.role === 'company' ? newUser.companyInfo : null // Only include company info if the user is a company
                 }
             });
         } catch (error) {
@@ -81,7 +78,7 @@ module.exports = {
     },
     GetAllCompany: async (req, res) => {
         try {
-            const companies = await UserModel.find({ role: 'company' }, 'companyInfo', req.params.id);
+            const companies = await UserModel.find({ role: 'company' }, 'companyInfo');
 
             res.json(companies.map(company => ({
                 userId: company._id,
@@ -90,6 +87,29 @@ module.exports = {
         } catch (error) {
             res.status(500).json({ error: 'Failed to retrieve companies' });
         }
+    },
+    searchCompany: (req, res) => {
+        const { companyName, companyCategory, address } = req.query;
+
+        const filter = {};
+
+        if (companyName) {
+            filter['companyInfo.companyName'] = { $regex: companyName, $options: 'i' };
+        }
+        if (companyCategory) {
+            filter['companyInfo.companyCategory'] = companyCategory;
+        }
+        if (address) {
+            filter['companyInfo.address'] = address;
+        }
+
+        UserModel.find(filter)
+            .then(data => {
+                res.json(data);
+            })
+            .catch(err => {
+                res.status(500).json({ error: 'Failed to search vacancies' });
+            });
     },
     GetCompanyById: async (req, res) => {
         const companyId = req.params.id;
