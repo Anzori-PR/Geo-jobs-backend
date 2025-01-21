@@ -25,19 +25,9 @@ module.exports = {
 
             await newUser.save();
 
-            const token = jwt.sign({ id: newUser._id, role: newUser.role }, 'your_jwt_secret', { expiresIn: '1h' });
 
-            res.status(201).json({
-                message: 'Registration successful',
-                token,
-                user: {
-                    id: newUser._id,
-                    name: newUser.name,
-                    email: newUser.email,
-                    role: newUser.role,
-                    companyInfo: newUser.role === 'company' ? newUser.companyInfo : null // Only include company info if the user is a company
-                }
-            });
+            res.status(201).json({message: 'Registration successful'});
+
         } catch (error) {
             res.status(500).json({ error: 'Failed to register user' });
         }
@@ -58,7 +48,7 @@ module.exports = {
                 return res.status(400).json({ error: 'Invalid email or password' });
             }
 
-            const token = jwt.sign({ id: user._id, role: user.role }, 'your_jwt_secret', { expiresIn: '1h' });
+            const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_TOKEN, { expiresIn: '1h' });
 
             // Send response with user info and token
             res.status(201).json({

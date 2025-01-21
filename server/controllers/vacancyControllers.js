@@ -81,4 +81,18 @@ module.exports = {
                 res.status(500).json({ error: 'Failed to retrieve the vacancy' });
             });
     },
+    deleteVacancy: (req, res) => {
+        const vacancyId = req.params.id;
+
+        VacancyModel.findByIdAndDelete(vacancyId)
+            .then(function (data) {
+                if (!data) {
+                    return res.status(404).json({ error: 'Vacancy not found' });
+                }
+                res.json(data);
+            })
+            .catch(function (err) {
+                res.status(500).json({ error: 'Failed to delete the vacancy' });
+            });
+    }
 }

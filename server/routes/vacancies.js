@@ -8,5 +8,6 @@ router.get('/all', vacancyController.getAll);
 router.get('/details/:id', vacancyController.getById);
 router.get('/vacancies/:id', vacancyController.getAllVacancyByCompanyId);
 router.get('/search', vacancyController.searchVacancy);
+router.delete('/delete/:id', vacancyController.deleteVacancy);
 
 module.exports = router;

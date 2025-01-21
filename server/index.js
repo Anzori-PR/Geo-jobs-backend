@@ -4,8 +4,11 @@ const mongoose = require('mongoose')
 const vacanciesRouter = require('./routes/vacancies'); 
 const usersRouter = require('./routes/users'); 
 
+
 const app = express()
 app.use(express.json());
+
+require('dotenv').config();
 
 mongoose.connect('mongodb://localhost:27017/vacancies');
 
