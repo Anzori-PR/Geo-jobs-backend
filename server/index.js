@@ -1,11 +1,12 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const cors = require('cors');
 
 const vacanciesRouter = require('./routes/vacancies'); 
 const usersRouter = require('./routes/users'); 
 
-
 const app = express()
+app.use(cors());
 app.use(express.json());
 
 require('dotenv').config();
@@ -15,7 +16,7 @@ mongoose.connect('mongodb://localhost:27017/vacancies');
 app.use('/vacancy', vacanciesRouter);
 app.use('/auth', usersRouter);
 
-app.listen(3001, () => {
+app.listen(3001, "0.0.0.0", () => {
     console.log("Server is running")
 })
 
