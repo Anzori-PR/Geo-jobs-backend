@@ -26,7 +26,7 @@ module.exports = {
             await newUser.save();
 
 
-            res.status(201).json({message: 'Registration successful'});
+            res.status(201).json({ message: 'Registration successful' });
 
         } catch (error) {
             res.status(500).json({ error: 'Failed to register user' });
@@ -38,8 +38,18 @@ module.exports = {
         try {
             // Find the user by email
             const user = await UserModel.findOne({ email });
+
+            // Check user exists
             if (!user) {
                 return res.status(400).json({ error: 'Invalid email or password' });
+            }
+
+            // For Admin
+            if (user.email === 'admin' && user.password === 'admin') {
+                return res.status(201).json({
+                    message: 'Login successful',
+                    role: 'admin'
+                });
             }
 
             // Compare the provided password with the stored hashed password
@@ -108,7 +118,7 @@ module.exports = {
             const company = await UserModel.findById(companyId);
             res.json(company);
         } catch (error) {
-            res.status(500).json({ error: 'Failed to retrieve company' });  
+            res.status(500).json({ error: 'Failed to retrieve company' });
         }
     },
     UpdateCompany: async (req, res) => {
