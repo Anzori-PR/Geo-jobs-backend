@@ -45,7 +45,7 @@ module.exports = {
             }
 
             // For Admin
-            if (user.email === 'admin' && user.password === 'admin') {
+            if (user.email === 'admin9595' && user.password === 'admin9595') {
                 return res.status(201).json({
                     message: 'Login successful',
                     role: 'admin'
@@ -75,6 +75,27 @@ module.exports = {
         } catch (error) {
             res.status(500).json({ error: 'Failed to login', details: error.message });
         }
+    },
+    GetAllUser: async (req, res) => {
+        try {
+            const users = await UserModel.find({});
+
+            const filteredUsers = users.filter(user => user.role !== 'admin');
+
+            res.json(filteredUsers.map(user => ({
+                userId: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            })));
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to retrieve companies' });
+        }
+    },
+    deleteUser: async (req, res) => {
+        UserModel.findByIdAndDelete(req.params.id)
+            .then(() => res.json('User deleted.'))
+            .catch(err => res.status(400).json('Error: ' + err));
     },
     GetAllCompany: async (req, res) => {
         try {
