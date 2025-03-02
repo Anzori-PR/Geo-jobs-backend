@@ -9,5 +9,7 @@ router.get('/details/:id', vacancyController.getById);
 router.get('/vacancies/:id', vacancyController.getAllVacancyByCompanyId);
 router.get('/search', vacancyController.searchVacancy);
 router.delete('/delete/:id', vacancyController.deleteVacancy);
+router.put('/updateApprove/:id', vacancyController.approveVacancy);
+router.put('/updateReject/:id', vacancyController.RejectVacancy);
 
 module.exports = router;

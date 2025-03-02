@@ -12,6 +12,7 @@ const vacancySchema = new mongoose.Schema({
     postedDate: { type: Date, default: Date.now },
     closingDate: { type: Date, required: true },
     employmentType: { type: String, required: true },
+    status: { type: String, default: "pending" } // 'pending' | 'approved' | 'rejected'
 }, { versionKey: false });
 
 const Model = mongoose.model('vacancy', vacancySchema, "vacancy");

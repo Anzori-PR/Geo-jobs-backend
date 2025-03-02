@@ -34,7 +34,7 @@ module.exports = {
             });
     },
     searchVacancy: (req, res) => {
-        const { name, category, location } = req.query;
+        const { name, category, location, status } = req.query;
 
         const filter = {};
 
@@ -46,6 +46,9 @@ module.exports = {
         }
         if (location) {
             filter.location = location;
+        }
+        if (status) {
+            filter.status = status;
         }
 
         VacancyModel.find(filter)
@@ -94,5 +97,25 @@ module.exports = {
             .catch(function (err) {
                 res.status(500).json({ error: 'Failed to delete the vacancy' });
             });
+    },
+    approveVacancy: async (req, res) => {
+        const { id } = req.params;
+        try {
+            const vacancy = await VacancyModel.findByIdAndUpdate(id, { status: "approved" }, { new: true });
+            res.json({ message: "Vacancy approved successfully", vacancy });
+        } catch (error) {
+            res.status(500).json({ error: "Failed to approve vacancy" });
+        }
+    },
+    RejectVacancy: async (req, res) => {
+        const { id } = req.params;
+        try {
+            const vacancy = await VacancyModel.findByIdAndUpdate(id, { status: "rejected" }, { new: true });
+            res.json({ message: "Vacancy Rejected", vacancy });
+        } catch (error) {
+            res.status(500).json({ error: "Failed to Reject vacancy" });
+        }
     }
+    
+    
 }

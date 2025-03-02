@@ -1,10 +1,11 @@
 const UserModel = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { search } = require('../routes/vacancies');
 
 module.exports = {
     Register: async (req, res) => {
-        const { name, email, password, role, companyInfo } = req.body;
+        const { name, email, password, role, companyInfo = {} } = req.body;
         try {
             // Check if the user already exists
             const existingUser = await UserModel.findOne({ email });
@@ -25,8 +26,20 @@ module.exports = {
 
             await newUser.save();
 
+            const token = jwt.sign({ id: newUser._id, newUser: newUser.role }, process.env.JWT_TOKEN, { expiresIn: '1h' });
 
-            res.status(201).json({ message: 'Registration successful' });
+            res.status(201).json({ 
+                message: 'Registration successful',
+                token,
+                user: {
+                    id: newUser._id,
+                    name: newUser.name,
+                    email: newUser.email,
+                    role: newUser.role,
+                    companyInfo: newUser.role === 'company' ? newUser.companyInfo : {} // Only include company info if the user is a company
+                } 
+
+            });
 
         } catch (error) {
             res.status(500).json({ error: 'Failed to register user' });
@@ -130,6 +143,23 @@ module.exports = {
             })
             .catch(err => {
                 res.status(500).json({ error: 'Failed to search vacancies' });
+            });
+    },
+    searchUser: (req, res) => {
+        const { name } = req.query;
+
+        const filter = {role: { $ne: "admin" }};
+
+        if (name) {
+            filter.name = { $regex: name, $options: 'i' };
+        }
+
+        UserModel.find(filter)
+            .then(data => {
+                res.json(data);
+            })
+            .catch(err => {
+                res.status(500).json({ error: 'Failed to search users' });
             });
     },
     GetCompanyById: async (req, res) => {

@@ -11,6 +11,7 @@ router.get('/all', userController.GetAllCompany);
 router.get('/CompanyDetails/:id', userController.GetCompanyById);
 router.put('/UpdateCompany', userController.UpdateCompany);
 router.get('/search', userController.searchCompany);
+router.get('/searchUser', userController.searchUser);
 router.delete('/delete/:id', userController.deleteUser);
 
 module.exports = router;
