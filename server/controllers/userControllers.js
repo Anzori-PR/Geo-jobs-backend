@@ -174,40 +174,31 @@ module.exports = {
     },
     UpdateCompany: async (req, res) => {
         const { userId, companyInfo } = req.body;
-
-        // Destructure companyInfo
-        const { companyName, companyCategory, email, phone, description, address, website, socialMedia, _filename } = companyInfo;
-
+        const file = req.file; // The uploaded file from multer
+    
         try {
-            // Find the user by ID
             const user = await UserModel.findById(userId);
-
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
-
-            // Ensure the user is a company
+    
             if (user.role !== 'company') {
                 return res.status(403).json({ error: 'Only company users can add company info' });
             }
-
-            // Add company info
+    
+            // Parse companyInfo if it's a string (might come as JSON string from FormData)
+            const parsedCompanyInfo = typeof companyInfo === 'string' ? JSON.parse(companyInfo) : companyInfo;
+    
+            // Update company info
             user.companyInfo = {
-                companyName,
-                companyCategory,
-                email,
-                phone,
-                description,
-                address,
-                website,
-                socialMedia,
-                _filename
+                ...parsedCompanyInfo,
+                _filename: file ? file.filename : user.companyInfo._filename // Store filename if new logo uploaded
             };
-
+    
             await user.save();
-
+    
             res.status(201).json({
-                message: 'Company info added successfully',
+                message: 'Company info updated successfully',
                 companyInfo: user.companyInfo
             });
         } catch (error) {
