@@ -15,7 +15,10 @@ app.use(express.json());
 
 require('dotenv').config();
 
-mongoose.connect('mongodb://localhost:27017/vacancies');
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
 
 const storage = multer.diskStorage({
     destination: './uploads/company-logos/',
