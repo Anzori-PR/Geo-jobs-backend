@@ -46,9 +46,10 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/vacancy', vacanciesRouter);
 app.use('/auth', usersRouter);
 
-app.listen(3001, "0.0.0.0", () => {
-    console.log("Server is running")
-})
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
 module.exports = app;
 
