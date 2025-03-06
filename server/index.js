@@ -10,7 +10,12 @@ const vacanciesRouter = require('./routes/vacancies');
 const usersRouter = require('./routes/users'); 
 
 const app = express()
-app.use(cors());
+const corsConfig = {
+    origin: '*',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+}
+app.use(cors(corsConfig));
 app.use(express.json());
 
 require('dotenv').config();
