@@ -174,7 +174,7 @@ module.exports = {
     },
     UpdateCompany: async (req, res) => {
         const { userId, companyInfo } = req.body;
-        const file = req.file; // The uploaded file from multer
+        const file = req.file; // The uploaded file from Cloudinary
     
         try {
             const user = await UserModel.findById(userId);
@@ -189,10 +189,10 @@ module.exports = {
             // Parse companyInfo if it's a string (might come as JSON string from FormData)
             const parsedCompanyInfo = typeof companyInfo === 'string' ? JSON.parse(companyInfo) : companyInfo;
     
-            // Update company info
+            // Update company info with Cloudinary image URL
             user.companyInfo = {
                 ...parsedCompanyInfo,
-                _filename: file ? file.filename : user.companyInfo._filename // Store filename if new logo uploaded
+                _filename : file ? file.path : user.companyInfo._filename // Save Cloudinary URL
             };
     
             await user.save();
@@ -205,4 +205,5 @@ module.exports = {
             res.status(500).json({ error: 'Failed to add company info', details: error.message });
         }
     }
+    
 }
